@@ -1,3 +1,4 @@
+import Home from "@/pages/Home";
 import Ongoing from "@/pages/Ongoing";
 import Popular from "@/pages/Popular";
 import Register from "@/pages/Register";
@@ -11,6 +12,10 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
       {
         path: "popular",
         element: <Popular />,
