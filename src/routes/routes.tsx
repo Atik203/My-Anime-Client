@@ -1,18 +1,37 @@
-import { routeGenerator } from "@/utils/routeGenerator";
+import Ongoing from "@/pages/Ongoing";
+import Popular from "@/pages/Popular";
+import Register from "@/pages/Register";
+import Upcoming from "@/pages/Upcoming";
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
 import Login from "./../pages/Login";
-import { adminPaths } from "./admin.routes";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    children: routeGenerator(adminPaths),
+    children: [
+      {
+        path: "popular",
+        element: <Popular />,
+      },
+      {
+        path: "ongoing",
+        element: <Ongoing />,
+      },
+      {
+        path: "upcoming",
+        element: <Upcoming />,
+      },
+    ],
   },
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
   },
 ]);
 
