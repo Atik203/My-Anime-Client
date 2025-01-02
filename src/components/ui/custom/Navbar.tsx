@@ -20,11 +20,13 @@ const navigationItems = [
 
 export function Navbar() {
   return (
-    <header className="sticky py-4 top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="py-4 top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <div className="mr-4 hidden md:flex">
           <Link to="/" className="mr-6 flex items-center space-x-2">
-            <span className="hidden font-bold sm:inline-block">My Anime</span>
+            <span className="hidden text-2xl font-bold sm:inline-block">
+              My Anime
+            </span>
           </Link>
           <NavigationMenu>
             <NavigationMenuList>
@@ -66,7 +68,7 @@ export function Navbar() {
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
             <Link to="/" className="mr-6 flex items-center space-x-2 md:hidden">
-              <span className="font-bold">My Anime</span>
+              <span className="font-bold text-xl">My Anime</span>
             </Link>
           </div>
           <nav className="flex items-center">
