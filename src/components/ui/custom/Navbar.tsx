@@ -9,21 +9,22 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ModeToggle } from "../mode-toggle";
 
 const navigationItems = [
   { title: "Home", to: "/" },
-  { title: "About", to: "/about" },
-  { title: "Services", to: "/services" },
-  { title: "Contact", to: "/contact" },
+  { title: "Popular", to: "/popular" },
+  { title: "Ongoing", to: "/ongoing" },
+  { title: "Upcoming", to: "/upcoming" },
 ];
 
 export function Navbar() {
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky py-4 top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <div className="mr-4 hidden md:flex">
           <Link to="/" className="mr-6 flex items-center space-x-2">
-            <span className="hidden font-bold sm:inline-block">ACME Inc.</span>
+            <span className="hidden font-bold sm:inline-block">My Anime</span>
           </Link>
           <NavigationMenu>
             <NavigationMenuList>
@@ -65,14 +66,17 @@ export function Navbar() {
         <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
           <div className="w-full flex-1 md:w-auto md:flex-none">
             <Link to="/" className="mr-6 flex items-center space-x-2 md:hidden">
-              <span className="font-bold">ACME Inc.</span>
+              <span className="font-bold">My Anime</span>
             </Link>
           </div>
           <nav className="flex items-center">
             <Button asChild>
-              <Link to="/signin">Sign In</Link>
+              <Link className="font-normal text-sm md:text-base" to="/signin">
+                Sign In
+              </Link>
             </Button>
           </nav>
+          <ModeToggle />
         </div>
       </div>
     </header>
