@@ -71,8 +71,8 @@ export function Navbar() {
           </div>
           <nav className="flex items-center">
             <Button asChild>
-              <Link className="font-normal text-sm md:text-base" to="/signin">
-                Sign In
+              <Link className="font-normal text-sm md:text-base" to="/login">
+                Login
               </Link>
             </Button>
           </nav>
