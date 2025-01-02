@@ -2,41 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.sider-style {
-  background-color: rgb(243, 246, 243) !important;
-  border-right: 1px solid lightgray !important;
-  box-shadow: 2px 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
-  padding: 1rem 0 !important;
-  transition: all 0.3s ease !important;
-  overflow-x: hidden !important;
-}
-
-.sider-menu-style {
-  color: hsl(var(--primary)) !important;
-  background-color: inherit !important;
-  font-weight: 500;
-  border-radius: var(--radius) !important;
-  transition: background-color 0.3s ease !important;
-  padding: 3px 0 I !important;
-  overflow-x: hidden !important;
-}
-
-.sider-menu-style:hover {
-  color: hsl(var(--primary-foreground)) !important;
-}
-
-/* Media query for small devices */
-@media (max-width: 640px) {
-  .sider-style {
-    padding: 0.5rem 0 !important;
-    box-shadow: none !important;
-  }
-
-  .sider-menu-style {
-    padding: 2px 0 !important;
-  }
-}
-
 .toast-success {
   background-color: #38a169 !important; /* Green */
 }
