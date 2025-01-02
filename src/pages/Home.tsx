@@ -1,10 +1,9 @@
-import { ModeToggle } from "@/components/ui/mode-toggle";
+import { Navbar } from "@/components/ui/custom/Navbar";
 
 const Home = () => {
   return (
     <div>
-      <h1>This is Home component</h1>
-      <ModeToggle />
+      <Navbar />
     </div>
   );
 };
