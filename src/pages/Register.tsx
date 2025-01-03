@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useRegisterMutation } from "@/redux/features/auth/authApi";
 
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
@@ -19,8 +20,8 @@ import { toast } from "sonner";
 const defaultValues = {
   email: "atikurrahaman0305@gmail.com",
   name: "Atikur Rahaman",
-  password: "abcd",
-  confirmPassword: "abcd",
+  password: "abcde",
+  confirmPassword: "abcde",
 };
 
 const Register = () => {
@@ -30,9 +31,24 @@ const Register = () => {
     defaultValues,
   });
 
+  const [register] = useRegisterMutation();
   const onSubmit: SubmitHandler<typeof defaultValues> = async (data) => {
     const toastId = toast.loading("Registering...");
-    // Handle registration logic here
+
+    try {
+      const response = await register(data).unwrap();
+      if (response.success) {
+        toast.success("Registered successfully", {
+          id: toastId,
+        });
+        navigate("/login");
+      }
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      toast.error((error as any).error.message, {
+        id: toastId,
+      });
+    }
   };
 
   return (
