@@ -18,6 +18,7 @@ import { toast } from "sonner";
 
 const defaultValues = {
   email: "atikurrahaman0305@gmail.com",
+  name: "Atikur Rahaman",
   password: "abcd",
   confirmPassword: "abcd",
 };
@@ -62,6 +63,22 @@ const Register = () => {
                   onSubmit={form.handleSubmit(onSubmit)}
                   className="space-y-4"
                 >
+                  <FormField
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            type="text"
+                            placeholder="Enter your full name"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     name="email"
                     render={({ field }) => (
@@ -118,7 +135,7 @@ const Register = () => {
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Password</FormLabel>
+                        <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
                           <Input
                             {...field}
