@@ -14,6 +14,8 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { logout, useCurrentUser } from "@/redux/features/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { ModeToggle } from "../mode-toggle";
@@ -26,10 +28,11 @@ const navigationItems = [
 ];
 
 export function Navbar() {
-  const user = {
-    name: "John Doe",
-    email: "johndoe@gmail.com",
-    role: "admin",
+  const user = useAppSelector(useCurrentUser);
+  const dispatch = useAppDispatch();
+
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   return (
@@ -85,7 +88,7 @@ export function Navbar() {
             </Link>
           </div>
           <nav className="flex items-center">
-            {user.email ? (
+            {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Avatar className="cursor-pointer">
@@ -104,12 +107,12 @@ export function Navbar() {
                     <Link to="/settings">Settings</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link
+                    <p
                       className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-500"
-                      to="/logout"
+                      onClick={handleLogout}
                     >
                       Logout
-                    </Link>
+                    </p>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
