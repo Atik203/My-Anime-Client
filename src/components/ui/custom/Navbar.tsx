@@ -104,7 +104,12 @@ export function Navbar() {
                     <Link to="/settings">Settings</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <Link to="/logout">Logout</Link>
+                    <Link
+                      className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-500"
+                      to="/logout"
+                    >
+                      Logout
+                    </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
