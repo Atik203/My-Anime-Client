@@ -1,4 +1,11 @@
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -19,6 +26,12 @@ const navigationItems = [
 ];
 
 export function Navbar() {
+  const user = {
+    name: "John Doe",
+    email: "johndoe@gmail.com",
+    role: "admin",
+  };
+
   return (
     <header className="py-4 top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
@@ -72,11 +85,36 @@ export function Navbar() {
             </Link>
           </div>
           <nav className="flex items-center">
-            <Button asChild>
-              <Link className="font-normal text-sm md:text-base" to="/login">
-                Login
-              </Link>
-            </Button>
+            {user.email ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Avatar className="cursor-pointer">
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>CN</AvatarFallback>
+                  </Avatar>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuItem>
+                    <Link to="/profile">Profile</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link to="/bookmarks">Bookmarks</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link to="/settings">Settings</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link to="/logout">Logout</Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button asChild>
+                <Link className="font-normal text-sm md:text-base" to="/login">
+                  Login
+                </Link>
+              </Button>
+            )}
           </nav>
           <ModeToggle />
         </div>
