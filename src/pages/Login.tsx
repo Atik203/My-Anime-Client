@@ -8,6 +8,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import { setUser } from "@/redux/features/auth/authSlice";
+import { useAppDispatch } from "@/redux/hooks";
 
 import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
@@ -18,7 +21,7 @@ import { toast } from "sonner";
 
 const defaultValues = {
   email: "atikurrahaman0305@gmail.com",
-  password: "abcd",
+  password: "abcde",
 };
 
 const Login = () => {
@@ -27,10 +30,38 @@ const Login = () => {
   const form = useForm({
     defaultValues,
   });
+  const [login] = useLoginMutation();
+  const dispatch = useAppDispatch();
 
   const onSubmit: SubmitHandler<typeof defaultValues> = async (data) => {
     const toastId = toast.loading("Logging in...");
+
     // Handle login logic here
+    try {
+      const response = await login(data).unwrap();
+      if (response.success) {
+        toast.success("Logged in successfully", {
+          id: toastId,
+        });
+
+        dispatch(
+          setUser({
+            token: response.data.accessToken,
+            user: response.data.user,
+          })
+        );
+        navigate("/");
+      } else {
+        toast.error(response.message, {
+          id: toastId,
+        });
+      }
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      toast.error((error as any).error.message, {
+        id: toastId,
+      });
+    }
   };
 
   return (
