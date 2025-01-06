@@ -196,11 +196,13 @@ const AddedAnimeDetails = () => {
                 <SelectValue placeholder="Select a server" />
               </SelectTrigger>
               <SelectContent className="bg-gray-200 dark:bg-gray-800  p-2 rounded mt-1">
-                {anime.streamingLinks.map((link) => (
-                  <SelectItem key={link.source} value={link.source}>
-                    {link.source}
-                  </SelectItem>
-                ))}
+                {anime.streamingLinks.map(
+                  (link: { source: string; link: string }) => (
+                    <SelectItem key={link.source} value={link.source}>
+                      {link.source}
+                    </SelectItem>
+                  )
+                )}
               </SelectContent>
             </Select>
           </div>

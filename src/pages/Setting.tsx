@@ -176,7 +176,7 @@ const Setting = () => {
                     />
                   </FormControl>
                   <FormMessage>
-                    {form.formState.errors.thumbnail?.message}
+                    {form.formState.errors.image?.message}
                   </FormMessage>
                 </FormItem>
               )}
