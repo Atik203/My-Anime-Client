@@ -5,7 +5,7 @@ const uploadImageToImgBB = async (image: File | string): Promise<string> => {
   formData.append("image", image);
 
   const response = await axios.post(
-    `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_API_KEY}`,
+    `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_IMGBB_KEY}`,
     formData
   );
 
