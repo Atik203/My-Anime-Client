@@ -19,12 +19,16 @@ import {
   useCurrentUser,
 } from "@/redux/features/auth/authSlice";
 import { useAppSelector } from "@/redux/hooks";
+import uploadImageToImgBB from "@/utils/uploadImageToImageBB";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+
 const formSchema = z.object({
   url: z.string().url({ message: "Invalid URL" }),
-  time: z.string().nonempty({ message: "Airing time is required" }),
+  image: z
+    .instanceof(FileList)
+    .refine((files) => files.length === 1, "Please upload a file"),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -55,7 +59,9 @@ const Setting = () => {
       prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
     );
   };
+
   const [AddAnime] = useAddAnimeMutation();
+
   const onSubmit = async (data: FormValues) => {
     const toastId = toast.loading("Adding anime...");
 
@@ -72,17 +78,18 @@ const Setting = () => {
         return;
       }
 
-      // add the anime to the database
+      const uploadImage = await uploadImageToImgBB(data.image[0]);
 
+      // add the anime to the database
       const result = await AddAnime({
         data: {
           ...animeData.data,
           schedule: {
             day: selectedDays,
-            time: data.time,
           },
           status: "ongoing",
           user: user._id,
+          image: uploadImage, // Assuming the response contains the URL of the uploaded thumbnail
         },
       }).unwrap();
 
@@ -151,13 +158,36 @@ const Setting = () => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="image"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="thumbnail">Thumbnail</FormLabel>
+                  <FormControl>
+                    <Input
+                      id="image"
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => field.onChange(e.target.files)}
+                      onBlur={field.onBlur}
+                      name={field.name}
+                      ref={field.ref}
+                    />
+                  </FormControl>
+                  <FormMessage>
+                    {form.formState.errors.thumbnail?.message}
+                  </FormMessage>
+                </FormItem>
+              )}
+            />
             <FormItem>
               <FormLabel htmlFor="airingDays">Airing Days</FormLabel>
               <FormControl>
                 <div className="relative">
                   <button
                     type="button"
-                    className="w-full bg-gray-950 text-white py-2 px-4 text-start rounded"
+                    className="w-full bg-gray-100 dark:bg-gray-950  py-2 px-4 text-start rounded"
                     onClick={() =>
                       document
                         .getElementById("dropdown")
@@ -170,7 +200,7 @@ const Setting = () => {
                   </button>
                   <div
                     id="dropdown"
-                    className="absolute mt-2 w-full bg-gray-900 text-white rounded shadow-lg hidden"
+                    className="absolute mt-2 w-full bg-gray-100 dark:bg-gray-950 rounded shadow-lg hidden"
                   >
                     {daysOfWeek.map((day) => (
                       <div key={day} className="px-4 py-2">
@@ -190,21 +220,7 @@ const Setting = () => {
                 </div>
               </FormControl>
             </FormItem>
-            <FormField
-              control={form.control}
-              name="time"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel htmlFor="airingTime">Airing Time</FormLabel>
-                  <FormControl>
-                    <Input id="airingTime" type="time" {...field} />
-                  </FormControl>
-                  <FormMessage>
-                    {form.formState.errors.time?.message}
-                  </FormMessage>
-                </FormItem>
-              )}
-            />
+
             <Button type="submit" className="mt-4 w-full">
               Submit
             </Button>
