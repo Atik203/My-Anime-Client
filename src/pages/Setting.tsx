@@ -12,8 +12,16 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import useAxiosSecure from "@/hooks/axiosSecure";
+import { useAddAnimeMutation } from "@/redux/features/anime/animeApi";
+import {
+  useCurrentToken,
+  useCurrentUser,
+} from "@/redux/features/auth/authSlice";
+import { useAppSelector } from "@/redux/hooks";
 import { useState } from "react";
-
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 const formSchema = z.object({
   url: z.string().url({ message: "Invalid URL" }),
   time: z.string().nonempty({ message: "Airing time is required" }),
@@ -32,9 +40,13 @@ const daysOfWeek = [
 ];
 
 const Setting = () => {
+  const user = useAppSelector(useCurrentUser);
+  const token = useAppSelector(useCurrentToken);
+  const navigate = useNavigate();
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
   });
+  const axiosSecure = useAxiosSecure();
 
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
 
@@ -43,9 +55,46 @@ const Setting = () => {
       prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]
     );
   };
+  const [AddAnime] = useAddAnimeMutation();
+  const onSubmit = async (data: FormValues) => {
+    const toastId = toast.loading("Adding anime...");
 
-  const onSubmit = (data: FormValues) => {
-    console.log({ ...data, day: selectedDays });
+    try {
+      // get the anime data from the url
+      const response = await axiosSecure.post(`/myanime?url=${data.url}`);
+      const animeData = response.data;
+      if (animeData.success === false) {
+        toast.error("Failed to add anime", { id: toastId });
+        return;
+      }
+      if (!user || !token) {
+        toast.error("Failed to add anime", { id: toastId });
+        return;
+      }
+
+      // add the anime to the database
+
+      const result = await AddAnime({
+        data: {
+          ...animeData.data,
+          schedule: {
+            day: selectedDays,
+            time: data.time,
+          },
+          status: "ongoing",
+          user: user._id,
+        },
+      }).unwrap();
+
+      if (result.success === false) {
+        toast.error("Failed to add anime", { id: toastId });
+        return;
+      }
+      navigate("/added-anime");
+      toast.success("Anime added successfully", { id: toastId });
+    } catch (error) {
+      toast.error("Failed to add anime", { id: toastId });
+    }
   };
 
   return (
