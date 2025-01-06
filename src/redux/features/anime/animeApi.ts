@@ -29,6 +29,16 @@ const animeApi = baseApi.injectEndpoints({
         }),
       }),
     }),
+    deletePreviousEp: builder.mutation({
+      query: ({ token, slug }) => ({
+        url: `/myanime/delete-previous-ep`,
+        method: "POST",
+        body: { slug },
+        headers: new Headers({
+          Authorization: `${token}`,
+        }),
+      }),
+    }),
   }),
 });
 
@@ -36,4 +46,5 @@ export const {
   useAddAnimeMutation,
   useGetMyDataQuery,
   useGetSingleMyDataQuery,
+  useDeletePreviousEpMutation,
 } = animeApi;

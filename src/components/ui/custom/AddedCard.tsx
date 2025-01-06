@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle } from "@/components/ui/card";
 import { TExternalAPi } from "@/types";
 import { useNavigate } from "react-router-dom";
 
@@ -14,16 +14,17 @@ const AddedCard = ({ anime }: { anime: TExternalAPi }) => {
   };
   return (
     <Card
-      className="bg-gray-800 text-white cursor-pointer"
+      className="bg-gray-800 my-8 h-[500px] text-white cursor-pointer"
       onClick={handleCardClick}
     >
+      <img
+        src={anime.image}
+        alt={anime.title}
+        className="w-full max-h-96 object-contain rounded-md"
+      />
       <CardHeader>
         <CardTitle>{anime.title}</CardTitle>
       </CardHeader>
-
-      <CardContent>
-        <p>{anime.description}</p>
-      </CardContent>
     </Card>
   );
 };
