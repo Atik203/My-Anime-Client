@@ -20,7 +20,20 @@ const animeApi = baseApi.injectEndpoints({
         }),
       }),
     }),
+    getSingleMyData: builder.query({
+      query: ({ token, slug }) => ({
+        url: `/myanime/my-data/single`,
+        body: { slug },
+        headers: new Headers({
+          Authorization: `${token}`,
+        }),
+      }),
+    }),
   }),
 });
 
-export const { useAddAnimeMutation, useGetMyDataQuery } = animeApi;
+export const {
+  useAddAnimeMutation,
+  useGetMyDataQuery,
+  useGetSingleMyDataQuery,
+} = animeApi;

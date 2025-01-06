@@ -1,5 +1,6 @@
 import ProtectedRoute from "@/components/layout/ProtectedRoute";
 import AddedAnime from "@/pages/AddedAnime";
+import AddedAnimeDetails from "@/pages/AddedAnimeDetails.";
 import Bookmark from "@/pages/Bookmark";
 import Home from "@/pages/Home";
 import Popular from "@/pages/Popular";
@@ -15,6 +16,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    errorElement: <h1>Not Found</h1>,
     children: [
       {
         path: "/",
@@ -67,6 +69,10 @@ const router = createBrowserRouter([
             <Setting />
           </ProtectedRoute>
         ),
+      },
+      {
+        path: "added-anime/:year/:month/:day/:slug",
+        element: <AddedAnimeDetails />,
       },
     ],
   },
