@@ -1,3 +1,4 @@
+import { TUser } from "@/redux/features/auth/authSlice";
 import { BaseQueryApi } from "@reduxjs/toolkit/query";
 
 export type TError = {
@@ -30,3 +31,24 @@ export type TQueryParam = {
 };
 
 export type TResponseRedux<T> = TResponse<T> & BaseQueryApi;
+
+export interface TAnimeDetails {
+  title: string;
+  description: string;
+  episode: string;
+  streamingLinks: { source: string; server: string; link: string }[];
+  releaseDate: string;
+  slug: string;
+  nextEpisode: string | null;
+  previousEpisode: string | null;
+}
+
+export interface TExternalAPi extends TAnimeDetails {
+  schedule: { day: string[]; time: string };
+  status: "ongoing" | "completed";
+  isDeleted: boolean;
+  user: TUser;
+  _id: string;
+  createdAt: string;
+  updatedAt: string;
+}
