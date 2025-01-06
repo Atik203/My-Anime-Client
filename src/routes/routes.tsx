@@ -1,7 +1,7 @@
 import ProtectedRoute from "@/components/layout/ProtectedRoute";
+import AddedAnime from "@/pages/AddedAnime";
 import Bookmark from "@/pages/Bookmark";
 import Home from "@/pages/Home";
-import Ongoing from "@/pages/Ongoing";
 import Popular from "@/pages/Popular";
 import Profile from "@/pages/Profile";
 import Register from "@/pages/Register";
@@ -25,8 +25,12 @@ const router = createBrowserRouter([
         element: <Popular />,
       },
       {
-        path: "ongoing",
-        element: <Ongoing />,
+        path: "added-anime",
+        element: (
+          <ProtectedRoute role={["admin", "normal", "superAdmin"]}>
+            <AddedAnime />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "upcoming",
