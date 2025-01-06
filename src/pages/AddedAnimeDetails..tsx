@@ -7,25 +7,35 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useAxiosSecure from "@/hooks/axiosSecure";
-import { useCurrentToken } from "@/redux/features/auth/authSlice";
+import {
+  useAddAnimeMutation,
+  useDeletePreviousEpMutation,
+} from "@/redux/features/anime/animeApi";
+import {
+  useCurrentToken,
+  useCurrentUser,
+} from "@/redux/features/auth/authSlice";
 import { useAppSelector } from "@/redux/hooks";
 import { TExternalAPi } from "@/types";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "sonner";
 
 const AddedAnimeDetails = () => {
   const { year, month, day, slug } = useParams();
   const fullSlug = `${year}/${month}/${day}/${slug}`;
   const navigate = useNavigate();
   const token = useAppSelector(useCurrentToken);
+  const user = useAppSelector(useCurrentUser);
+  const [DeletePreviousAnime] = useDeletePreviousEpMutation();
 
   const axiosSecure = useAxiosSecure();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [animeData, setAnimeData] = useState<any | null>(null);
-  const [selectedServer, setSelectedServer] = useState("Server 1");
+  const [selectedServer, setSelectedServer] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
-
+  const [AddAnime] = useAddAnimeMutation();
   useEffect(() => {
     const getAnimeData = async () => {
       try {
@@ -50,48 +60,152 @@ const AddedAnimeDetails = () => {
 
   const anime = animeData.data;
 
-  const handleServerChange = (server) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleServerChange = (server: any) => {
     setSelectedServer(server);
     const selectedLink = anime.streamingLinks.find(
-      (link) => link.source === server
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (link: any) => link.source === server
     );
     if (selectedLink) {
       setVideoUrl(selectedLink.link);
     }
   };
 
-  const handleNextEpisode = () => {
+  const handleNextEpisode = async () => {
     if (anime.nextEpisode) {
-      navigate(`/added-anime/${anime.nextEpisode}`);
+      try {
+        const response = await axiosSecure.post(
+          `/myanime?url=${anime.nextEpisode}`,
+          {
+            headers: {
+              Authorization: `${token}`,
+            },
+          }
+        );
+        const animeData = response.data;
+        if (animeData.success === false) {
+          toast.error("Failed to fetch next episode data");
+          return;
+        }
+        if (!user || !token) {
+          toast.error("User not authenticated");
+          return;
+        }
+
+        const result = await AddAnime({
+          data: {
+            ...animeData.data,
+            schedule: {
+              day: anime.schedule.day,
+            },
+            status: anime.status,
+            user: user._id,
+            image: anime.image,
+          },
+        }).unwrap();
+        if (result.success === false) {
+          toast.error("Failed to add anime to database");
+          return;
+        }
+
+        const [year, month, day, ...remaining] = result.data.slug.split("/");
+        const remainingSlug = remaining.join("/");
+
+        const deletePrevious = await DeletePreviousAnime({
+          token,
+          slug: fullSlug,
+        }).unwrap();
+
+        if (deletePrevious.success === false) {
+          toast.error("Failed to delete previous episode");
+          return;
+        }
+        toast.success("Next Episode Fetched Successfully");
+        navigate(`/added-anime/${year}/${month}/${day}/${remainingSlug}`);
+      } catch (error) {
+        toast.error("Failed to go to next episode");
+      }
     }
   };
-
-  const handlePrevEpisode = () => {
+  const handlePrevEpisode = async () => {
     if (anime.previousEpisode) {
-      navigate(`/added-anime/${anime.previousEpisode}`);
+      try {
+        const response = await axiosSecure.post(
+          `/myanime?url=${anime.previousEpisode}`,
+          {
+            headers: {
+              Authorization: `${token}`,
+            },
+          }
+        );
+        const animeData = response.data;
+        if (animeData.success === false) {
+          toast.error("Failed to fetch next episode data");
+          return;
+        }
+        if (!user || !token) {
+          toast.error("User not authenticated");
+          return;
+        }
+
+        const result = await AddAnime({
+          data: {
+            ...animeData.data,
+            schedule: {
+              day: anime.schedule.day,
+            },
+            status: anime.status,
+            user: user._id,
+            image: anime.image,
+          },
+        }).unwrap();
+        const [year, month, day, ...remaining] = result.data.slug.split("/");
+
+        const remainingSlug = remaining.join("/");
+        const deletePrevious = await DeletePreviousAnime({
+          token,
+          slug: fullSlug,
+        }).unwrap();
+
+        if (deletePrevious.success === false) {
+          toast.error("Failed to delete previous episode");
+          return;
+        }
+        toast.success("Previous Episode Fetched Successfully");
+        navigate(`/added-anime/${year}/${month}/${day}/${remainingSlug}`);
+        if (result.success === false) {
+          toast.error("Failed to add anime to database");
+          return;
+        }
+      } catch (error) {
+        toast.error("Failed to go to next episode");
+      }
     }
   };
 
   return (
-    <div className="p-6 bg-gray-900 text-white min-h-screen">
+    <div className="p-6  min-h-screen">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-4 text-center">{anime.title}</h1>
-        <p className="mb-4 text-center">{anime.description}</p>
-        <div className="mb-4 max-w-sm mx-auto">
-          <p className="mb-2 text-center">Select Server</p>
-          <Select onValueChange={handleServerChange} value={selectedServer}>
-            <SelectTrigger className="w-full">
-              <SelectValue placeholder="Select a server" />
-            </SelectTrigger>
-            <SelectContent>
-              {anime.streamingLinks.map((link) => (
-                <SelectItem key={link.source} value={link.source}>
-                  {link.source}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+        <div className="flex justify-center my-2 items-center gap-5">
+          <p className=" text-center">Select Server :</p>
+          <div className=" max-w-md">
+            <Select onValueChange={handleServerChange} value={selectedServer}>
+              <SelectTrigger className="w-full bg-gray-200 dark:bg-gray-800 p-2 rounded">
+                <SelectValue placeholder="Select a server" />
+              </SelectTrigger>
+              <SelectContent className="bg-gray-200 dark:bg-gray-800  p-2 rounded mt-1">
+                {anime.streamingLinks.map((link) => (
+                  <SelectItem key={link.source} value={link.source}>
+                    {link.source}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
+
         <div className="mb-4">
           <iframe
             src={videoUrl}
@@ -104,8 +218,10 @@ const AddedAnimeDetails = () => {
         </div>
         <div className="mb-4 text-center">
           <p>Episode: {anime.episode}</p>
+          <p>Airing Date: {anime.schedule.day}</p>
           <p>Status: {anime.status}</p>
           <p>Release Date: {anime.releaseDate}</p>
+          <p className="mb-4 text-center">{anime.description}</p>
         </div>
         <div className="flex justify-between">
           <Button onClick={handlePrevEpisode} disabled={!anime.previousEpisode}>
