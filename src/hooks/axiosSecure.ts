@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect } from "react";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api/v1",
+  baseURL: `${import.meta.env.VITE_BASE_URL}`,
   withCredentials: true,
 });
 
