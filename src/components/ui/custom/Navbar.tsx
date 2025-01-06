@@ -23,10 +23,9 @@ import { ModeToggle } from "../mode-toggle";
 const navigationItems = [
   { title: "Home", to: "/" },
   { title: "Popular", to: "/popular" },
-  { title: "Ongoing", to: "/ongoing" },
   { title: "Upcoming", to: "/upcoming" },
 ];
-
+const userItems = { title: "Added Anime", to: "/added-anime" };
 export function Navbar() {
   const user = useAppSelector(useCurrentUser);
   const dispatch = useAppDispatch();
@@ -57,6 +56,17 @@ export function Navbar() {
                   </Link>
                 </NavigationMenuItem>
               ))}
+              {user && (
+                <NavigationMenuItem>
+                  <Link to={userItems.to}>
+                    <NavigationMenuLink
+                      className={navigationMenuTriggerStyle()}
+                    >
+                      {userItems.title}
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
+              )}
             </NavigationMenuList>
           </NavigationMenu>
         </div>
