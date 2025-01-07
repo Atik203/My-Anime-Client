@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
 import { TExternalAPi } from "@/types";
 import { useNavigate } from "react-router-dom";
 
@@ -23,7 +23,10 @@ const AddedCard = ({ anime }: { anime: TExternalAPi }) => {
         className="w-full max-h-96 object-contain rounded-md"
       />
       <CardHeader>
-        <CardTitle>{anime.title}</CardTitle>
+        <h1>{anime.title}</h1>
+        {anime.status === "ongoing" ? (
+          <p className="text-green-500">Airing Date: {anime.schedule.day}</p>
+        ) : null}
       </CardHeader>
     </Card>
   );
