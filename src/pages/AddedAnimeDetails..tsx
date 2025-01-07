@@ -184,6 +184,24 @@ const AddedAnimeDetails = () => {
     }
   };
 
+  const handleDeleteAnime = async () => {
+    try {
+      const deletePrevious = await DeletePreviousAnime({
+        token,
+        slug: fullSlug,
+      }).unwrap();
+
+      if (deletePrevious.success === false) {
+        toast.error("Failed to delete anime");
+        return;
+      }
+      toast.success("Anime Deleted Successfully");
+      navigate("/added-anime");
+    } catch (error) {
+      toast.error("Failed to delete anime");
+    }
+  };
+
   return (
     <div className="p-6  min-h-screen">
       <div className="max-w-4xl mx-auto">
@@ -226,12 +244,20 @@ const AddedAnimeDetails = () => {
           <p className="mb-4 text-center">{anime.description}</p>
         </div>
         <div className="flex justify-between">
-          <Button onClick={handlePrevEpisode} disabled={!anime.previousEpisode}>
-            Previous Episode
+          <Button onClick={handleDeleteAnime} className="bg-red-500">
+            Remove Anime
           </Button>
-          <Button onClick={handleNextEpisode} disabled={!anime.nextEpisode}>
-            Next Episode
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={handlePrevEpisode}
+              disabled={!anime.previousEpisode}
+            >
+              Previous Episode
+            </Button>
+            <Button onClick={handleNextEpisode} disabled={!anime.nextEpisode}>
+              Next Episode
+            </Button>
+          </div>
         </div>
       </div>
     </div>
