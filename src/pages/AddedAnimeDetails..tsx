@@ -202,8 +202,11 @@ const AddedAnimeDetails = () => {
     }
   };
 
+  if (!anime)
+    return <h1 className="text-center min-h-screen mt-10">Loading...</h1>;
+
   return (
-    <div className="p-6  min-h-screen">
+    <div className="py-12 min-h-screen">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-4 text-center">{anime.title}</h1>
         <div className="flex justify-center my-2 items-center gap-5">
