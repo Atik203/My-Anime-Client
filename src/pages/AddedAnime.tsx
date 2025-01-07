@@ -12,7 +12,7 @@ const AddedAnime = () => {
   if (isLoading || isFetching) return <h1>Loading...</h1>;
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="grid py-12 grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {data.data?.map((anime: TExternalAPi) => (
         <AddedCard key={anime._id} anime={anime} />
       ))}
